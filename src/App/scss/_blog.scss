@@ -1,0 +1,12 @@
+.blog-list {
+
+    .ant-list-item-meta-title a {
+        font-size: 28px;
+        font-weight: 600;
+
+        &:hover{
+            color: $primary-color;
+        }
+    }
+}
+

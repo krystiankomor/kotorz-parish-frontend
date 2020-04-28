@@ -1,0 +1,29 @@
+.left-column {
+  background: url("../images/kreska-pion.png") right repeat-y;
+  .nav {
+    a {
+      background: url(../images/kreska-li.png) repeat-x top;
+      text-transform: uppercase;
+      color: $dark;
+
+      &:first-child {
+        background: none !important;
+      }
+
+      &:hover {
+        color: $orange;
+      }
+    }
+
+    .nav {
+      margin-left: 2rem;
+      margin-bottom: 0.5rem;
+      font-size: 94%;
+
+      a {
+        background: none;
+        text-transform: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+$main-container-background: #ffffff;
+$main-container-offset: 24px, -36px;
+$main-container-border-radius: 10px;
+$main-container-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.4);
+// $primary-color: #ed6400;
+$primary-color: #d46b08;
+$main-container-padding: 20px;
+
+@import "~bootstrap/scss/bootstrap";
+@import "scss/_scaffolding.scss";
+@import "scss/_left-column.scss";
+@import "scss/_right-column.scss";
+@import "scss/_blog.scss";
+@import "scss/_base.scss";
