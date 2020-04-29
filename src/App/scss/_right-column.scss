@@ -1,17 +1,21 @@
 .right-column {
   background: url("../images/kreska-pion.png") left repeat-y;
+  line-height: $column-line-height;
 
   &__row {
-    margin-bottom: 70px;
+    margin-bottom: 2rem;
 
     h4 {
-      background: url(../images/naglowki/h3.png) repeat-x top !important;
-      font-size: 1.7rem;
-      line-height: 150%;
-      font-weight: 600;
-      margin-left: -40px;
-      padding-left: 20px;
+      background: url(../images/naglowki/h3.png) repeat-x top;
+      // font-weight: 700;
+      padding: 3px 0 10px 20px;
+      margin: 0 -1.5rem;
+      text-transform: uppercase;
       text-shadow: 0px 0px 5px rgb(255, 255, 255);
+    }
+
+    .blockquote {
+      font-size: $font-size-base;
     }
   }
 }

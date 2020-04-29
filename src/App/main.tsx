@@ -1,12 +1,24 @@
 import React from "react";
-import Blog from "./Blog/blog";
+import { Blog } from "./Blog/blog";
+import {RightSidebar} from "./right"
 import "./main.scss";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faCog,
+  faEdit,
+  faTrashAlt,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
+import { faYoutube } from "@fortawesome/free-brands-svg-icons";
+
 import logo from "./images/top.jpg";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
+
+library.add(faEdit, faCog, faTrashAlt, faEyeSlash, faYoutube);
 
 class KotorzMainComponent extends React.Component {
   render() {
@@ -22,8 +34,8 @@ class KotorzMainComponent extends React.Component {
             <Col className="p-0">
               <div className="page__main-container">
                 <div className="page__main-container--offset">
-                  <Row>
-                    <Col sm={3} className="left-column pr-0">
+                  <Row className="p-0 m-0">
+                    <Col sm={3} className="left-column pt-4 pr-0 pb-4 pl-4">
                       <Nav className="flex-column">
                         <Nav.Link>Aktualności</Nav.Link>
                         <Nav.Link>Ewangelia na dziś</Nav.Link>
@@ -60,10 +72,13 @@ class KotorzMainComponent extends React.Component {
                         <Nav.Link>Administracja</Nav.Link>
                       </Nav>
                     </Col>
-                    <Col>
-                      <h1 className="text-center">Aktualności</h1>
+                    <Col className="p-4">
+                      <h1 className="text-center display-4 text-orange">
+                        Aktualności
+                      </h1>
                       <Blog />
                     </Col>
+                    <RightSidebar />
                   </Row>
                 </div>
               </div>
