@@ -1,5 +1,5 @@
 import React from "react";
-import Blog from "./blog";
+import Blog from "./Blog/blog";
 import "./main.scss";
 import logo from "./images/top.jpg";
 import Container from "react-bootstrap/Container";
