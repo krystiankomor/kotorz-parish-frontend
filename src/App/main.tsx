@@ -1,6 +1,6 @@
 import React from "react";
 import { Blog } from "./Blog/blog";
-import {RightSidebar} from "./right"
+import { RightSidebar } from "./right";
 import "./main.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -37,6 +37,7 @@ class KotorzMainComponent extends React.Component {
                   <Row className="p-0 m-0">
                     <Col sm={3} className="left-column pt-4 pr-0 pb-4 pl-4">
                       <Nav className="flex-column">
+                        <Nav.Link>Strona główna</Nav.Link>
                         <Nav.Link>Aktualności</Nav.Link>
                         <Nav.Link>Ewangelia na dziś</Nav.Link>
                         <Nav.Link>Odeszli od nas...</Nav.Link>

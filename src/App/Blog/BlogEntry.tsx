@@ -1,87 +1,88 @@
 import React from "react";
-import Dropdown, { DropdownDivider } from "react-bootstrap/Dropdown";
+import Button from "react-bootstrap/Button";
+import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import Modal from "react-bootstrap/Modal";
 import ReactHtmlParser from "react-html-parser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-interface Props {}
-
-interface State {
-  id: Number;
+interface Props {
+  id: number;
   title: string;
   date: string;
   text: string;
+  hidden: boolean;
+}
+
+interface State extends Props {
+  editModalShow: boolean;
+}
+
+interface EditModalProps {
+  show: boolean;
+  onHide: () => void;
+  state: State;
 }
 
 class BlogEntry extends React.Component<Props, State> {
-  state: State = {
-    id: 1,
-    title: "Drodzy parafianie",
-    date: "sobota, 18 kwietnia 2020r.",
-    text: `<p>
-      W trosce o zdrowie wiernych w zaistniałej sytuacji ks,. Biskup
-      Ordynariusz wydal dekret, którego zasady z dniem 20 kwietnia 2020
-      roku obowiązują do odwołania w Diecezji Opolskiej.
-    </p>
-    <ol>
-      <li>
-        Przedłużona jest dyspensa od uczestnictwa w niedzielnych i
-        świątecznych mszach św.
-      </li>
-      <li>
-        W obrzędach religijnych może uczestniczyć określona liczba
-        wiernych: 1 osoba na 15 m kw. (Informacja o liczbie osób
-        mogących jednorazowo znajdować się w naszej świątyni wywieszona
-        jest na drzwiach kościoła )
-      </li>
-      <li>
-        Na placu wokół kościoła i na cmentarzu nie obowiązuje żaden
-        przelicznik, należy jednak zachować minimum 2 m. odległość od
-        siebie.
-      </li>
-      <li>
-        Wierni mają obowiązek zakrywania ust i nosa w kościele i jego
-        otoczeniu. Przystępując do Komunii św. powinni odsłonić usta nie
-        dotykając zewnętrznej części elementu ochronnego.
-      </li>
-      <li>
-        Codziennie o 15.00 wystawiany będzie Przenajświętszy Sakrament i
-        w tym czasie udzielana będzie Komunia św. wszystkim, którzy
-        pragną ją przyjąć,
-      </li>
-      <li>
-        Wierni maja prawo w każdej chwili poprosić o przystąpienie do
-        Sakramentu Pokuty.
-      </li>
-    </ol>
+  constructor(props: Props) {
+    super(props);
 
-    <p>
-      Bardzo proszę wszystkich o dostosowanie się do wymienionych zasad.
-    </p>
+    this.state = {
+      id: props.id,
+      title: props.title,
+      date: props.date,
+      text: props.text,
+      hidden: props.hidden,
+      editModalShow: false,
+    };
+  }
 
-    <p class="text-right">
-      Z modlitewną pamięcią
-      <br />
-      Wasz proboszcz
-      <br />
-      R.Kała
-    </p>`,
-  };
+  editModal(props: EditModalProps) {
+    return (
+      <Modal
+        show={props.show}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        onHide={() => props.onHide()}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Modal {props.state.id}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>Centered Modal</h4>
+          <p>
+            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
+            ac consectetur ac, vestibulum at eros.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => props.onHide()}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
+  updateEditModalShow(state: boolean): void {
+    this.setState({ editModalShow: state });
+  }
 
   render() {
     return (
-      // <Card className="shadow p-2 m-3">
-      // {/* // <Card className="border-top-0 border-right-0 border-left-0"> */}
       <div className="p-3">
         <DropdownButton
           alignRight
           id={`${uuidv4()}`}
           className="float-right"
-          variant="secondary"
+          variant="primary"
           title={<FontAwesomeIcon icon="cog" />}
         >
-          <Dropdown.Item href="#/action-1">
+          <Dropdown.Item onClick={() => this.updateEditModalShow(true)}>
             <FontAwesomeIcon icon="edit" /> Edytuj
           </Dropdown.Item>
           <Dropdown.Item href="#/action-3">
@@ -99,6 +100,11 @@ class BlogEntry extends React.Component<Props, State> {
         </h2>
         <div className="mb-2 text-muted">{this.state.date}</div>
         <div className="text-justify">{ReactHtmlParser(this.state.text)}</div>
+        <this.editModal
+          show={this.state.editModalShow}
+          onHide={() => this.updateEditModalShow(false)}
+          state={this.state}
+        />
       </div>
     );
   }
