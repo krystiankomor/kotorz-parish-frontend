@@ -9,7 +9,7 @@
     box-shadow: $main-container-box-shadow;
     background: $main-container-background;
     border-radius: $main-container-border-radius;
-    margin-top: -15px;
+    margin-top: -$main-container-border-radius;
 
     &--offset {
       box-shadow: $main-container-box-shadow;
@@ -17,10 +17,6 @@
       border-radius: $main-container-border-radius;
       transform: translate($main-container-offset);
       overflow: hidden;
-
-      .section {
-        padding: 40px;
-      }
     }
   }
 }
