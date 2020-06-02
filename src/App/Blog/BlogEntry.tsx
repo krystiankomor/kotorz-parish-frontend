@@ -6,17 +6,10 @@ import Modal from "react-bootstrap/Modal";
 import ReactHtmlParser from "react-html-parser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
+import { BlogEntryProps } from "./BlogEntryProps";
 
-interface Props {
-  id: number;
-  title: string;
-  date: string;
-  text: string;
-  hidden: boolean;
-}
-
-interface State extends Props {
-  editModalShow: boolean;
+interface State extends BlogEntryProps {
+  showEditModal: boolean;
 }
 
 interface EditModalProps {
@@ -25,8 +18,8 @@ interface EditModalProps {
   state: State;
 }
 
-class BlogEntry extends React.Component<Props, State> {
-  constructor(props: Props) {
+class BlogEntry extends React.Component<BlogEntryProps, State> {
+  constructor(props: BlogEntryProps) {
     super(props);
 
     this.state = {
@@ -35,10 +28,11 @@ class BlogEntry extends React.Component<Props, State> {
       date: props.date,
       text: props.text,
       hidden: props.hidden,
-      editModalShow: false,
+      showEditModal: false,
     };
   }
 
+  //TODO: Add form for editing
   editModal(props: EditModalProps) {
     return (
       <Modal
@@ -50,11 +44,10 @@ class BlogEntry extends React.Component<Props, State> {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Modal {props.state.id}
+            Edytuj post "{props.state.title}"
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Centered Modal</h4>
           <p>
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
             dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
@@ -68,10 +61,11 @@ class BlogEntry extends React.Component<Props, State> {
     );
   }
 
-  updateEditModalShow(state: boolean): void {
-    this.setState({ editModalShow: state });
+  updateShowEditModal(state: boolean): void {
+    this.setState({ showEditModal: state });
   }
 
+  //TODO: hidden entry
   render() {
     return (
       <div className="p-3">
@@ -82,10 +76,10 @@ class BlogEntry extends React.Component<Props, State> {
           variant="primary"
           title={<FontAwesomeIcon icon="cog" />}
         >
-          <Dropdown.Item onClick={() => this.updateEditModalShow(true)}>
+          <Dropdown.Item onClick={() => this.updateShowEditModal(true)}>
             <FontAwesomeIcon icon="edit" /> Edytuj
           </Dropdown.Item>
-          <Dropdown.Item href="#/action-3">
+          <Dropdown.Item>
             <FontAwesomeIcon icon="eye-slash" /> Ukryj
           </Dropdown.Item>
           <Dropdown.Divider />
@@ -101,8 +95,8 @@ class BlogEntry extends React.Component<Props, State> {
         <div className="mb-2 text-muted">{this.state.date}</div>
         <div className="text-justify">{ReactHtmlParser(this.state.text)}</div>
         <this.editModal
-          show={this.state.editModalShow}
-          onHide={() => this.updateEditModalShow(false)}
+          show={this.state.showEditModal}
+          onHide={() => this.updateShowEditModal(false)}
           state={this.state}
         />
       </div>

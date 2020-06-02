@@ -1,16 +1,9 @@
 import React from "react";
 import { BlogEntry } from "./BlogEntry";
-
-interface Entry {
-  id: number;
-  title: string;
-  date: string;
-  text: string;
-  hidden: boolean;
-}
+import { BlogEntryProps } from "./BlogEntryProps";
 
 interface State {
-  entries: Entry[];
+  entries: BlogEntryProps[];
 }
 
 export class Blog extends React.Component {
@@ -19,12 +12,11 @@ export class Blog extends React.Component {
   };
 
   componentDidMount() {
-    this.putBlogEntriesToState(10);
-    console.log(this.state);
+    this.putBlogEntriesToState(5);
   }
 
   putBlogEntriesToState(amount: number): void {
-    const entries: Entry[] = [];
+    const entries: BlogEntryProps[] = [];
 
     for (var i = 0; i < amount; i++) {
       entries.push({
@@ -92,6 +84,7 @@ export class Blog extends React.Component {
         {this.state.entries.map((el) => (
           <BlogEntry
             id={el.id}
+            key={el.id}
             title={el.title}
             date={el.date}
             text={el.text}
