@@ -4,35 +4,38 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Modal from "react-bootstrap/Modal";
 import ReactHtmlParser from "react-html-parser";
+import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
-import { BlogEntryProps } from "./BlogEntryProps";
+import { IBlogEntry } from "./IBlogEntry";
 
-interface State extends BlogEntryProps {
+interface IState extends IBlogEntry {
   showEditModal: boolean;
+  focused: boolean | null;
 }
 
 interface EditModalProps {
   show: boolean;
   onHide: () => void;
-  state: State;
+  state: IState;
 }
 
-class BlogEntry extends React.Component<BlogEntryProps, State> {
-  constructor(props: BlogEntryProps) {
+class BlogEntry extends React.Component<IBlogEntry, IState> {
+  constructor(props: IBlogEntry) {
     super(props);
 
     this.state = {
       id: props.id,
       title: props.title,
+      slug: props.slug,
       date: props.date,
-      text: props.text,
-      hidden: props.hidden,
+      body: props.body,
+      extraBody: props.extraBody,
       showEditModal: false,
+      focused: false,
     };
   }
 
-  //TODO: Add form for editing
   editModal(props: EditModalProps) {
     return (
       <Modal
@@ -43,19 +46,43 @@ class BlogEntry extends React.Component<BlogEntryProps, State> {
         onHide={() => props.onHide()}
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Edytuj post "{props.state.title}"
-          </Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">Edytuj</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-          </p>
+          <Form>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Tytuł</Form.Label>
+              <Form.Control
+                placeholder="Podaj tytuł wpisu"
+                value={props.state.title}
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Data</Form.Label>
+              <Form.Control placeholder="Data" value={props.state.date} />
+            </Form.Group>
+
+            <Form.Group controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Treść</Form.Label>
+              <Form.Control as="textarea" rows="4" value={props.state.body} />
+            </Form.Group>
+
+            <Form.Group controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Treść dodatkowa</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows="4"
+                value={props.state.extraBody}
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => props.onHide()}>Close</Button>
+          <Button onClick={() => props.onHide()}>Zapisz</Button>
+          <Button onClick={() => props.onHide()} variant="secondary">
+            Zamknij
+          </Button>
         </Modal.Footer>
       </Modal>
     );
@@ -65,7 +92,6 @@ class BlogEntry extends React.Component<BlogEntryProps, State> {
     this.setState({ showEditModal: state });
   }
 
-  //TODO: hidden entry
   render() {
     return (
       <div className="p-3">
@@ -79,21 +105,27 @@ class BlogEntry extends React.Component<BlogEntryProps, State> {
           <Dropdown.Item onClick={() => this.updateShowEditModal(true)}>
             <FontAwesomeIcon icon="edit" /> Edytuj
           </Dropdown.Item>
-          <Dropdown.Item>
-            <FontAwesomeIcon icon="eye-slash" /> Ukryj
-          </Dropdown.Item>
+
           <Dropdown.Divider />
+
           <Dropdown.Item href="#/action-2" className="text-danger">
             <FontAwesomeIcon icon="trash-alt" /> Usuń
           </Dropdown.Item>
         </DropdownButton>
+
         <h2>
-          <a href="#" className="text-reset font-weight-bold">
+          <a
+            href={`aktualnosci/${this.state.slug}`}
+            className="text-reset font-weight-bold"
+          >
             {this.state.title}
           </a>
         </h2>
+
         <div className="mb-2 text-muted">{this.state.date}</div>
-        <div className="text-justify">{ReactHtmlParser(this.state.text)}</div>
+
+        <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
+
         <this.editModal
           show={this.state.showEditModal}
           onHide={() => this.updateShowEditModal(false)}

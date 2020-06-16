@@ -1,9 +1,10 @@
 import React from "react";
 import { BlogEntry } from "./BlogEntry";
-import { BlogEntryProps } from "./BlogEntryProps";
+import { IBlogEntry } from "./IBlogEntry";
+import { BASE_API_URL, BLOG_URL } from "../settings"
 
 interface State {
-  entries: BlogEntryProps[];
+  entries: IBlogEntry[];
 }
 
 export class Blog extends React.Component {
@@ -11,20 +12,27 @@ export class Blog extends React.Component {
     entries: [],
   };
 
-  componentDidMount() {
-    this.putBlogEntriesToState(5);
+  makeRequestAndUpdateState(): void {
+    fetch(`${BASE_API_URL}${BLOG_URL}`)
+      .then((response) => response.json())
+      .then((data) => this.setState({ entries: data }));
+  }
+
+  componentDidMount(): void {
+    // this.putBlogEntriesToState(5);
+    this.makeRequestAndUpdateState();
   }
 
   putBlogEntriesToState(amount: number): void {
-    const entries: BlogEntryProps[] = [];
+    const entries: IBlogEntry[] = [];
 
     for (var i = 0; i < amount; i++) {
       entries.push({
         id: i,
         title: "Drodzy parafianie" + i,
+        slug: "aaa",
         date: "sobota, 18 kwietnia 2020r.",
-        hidden: i % 3 === 0,
-        text: `<p>
+        body: `<p>
         W trosce o zdrowie wiernych w zaistniałej sytuacji ks,. Biskup
         Ordynariusz wydal dekret, którego zasady z dniem 20 kwietnia 2020
         roku obowiązują do odwołania w Diecezji Opolskiej.
@@ -72,6 +80,7 @@ export class Blog extends React.Component {
         <br />
         R.Kała
       </p>`,
+        extraBody: "",
       });
     }
 
@@ -86,9 +95,10 @@ export class Blog extends React.Component {
             id={el.id}
             key={el.id}
             title={el.title}
+            slug={el.slug}
             date={el.date}
-            text={el.text}
-            hidden={el.hidden}
+            body={el.body}
+            extraBody={el.extraBody}
           />
         ))}
       </div>
