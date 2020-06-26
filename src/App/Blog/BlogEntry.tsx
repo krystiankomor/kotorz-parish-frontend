@@ -1,26 +1,16 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import Modal from "react-bootstrap/Modal";
 import ReactHtmlParser from "react-html-parser";
-import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
 import { IBlogEntry } from "./IBlogEntry";
+import { IBlogState } from "./IBlogState";
+import { BlogEditModal } from "./BlogEditModal";
+import Button from "react-bootstrap/Button";
+import Collapse from "react-bootstrap/Collapse";
 
-interface IState extends IBlogEntry {
-  showEditModal: boolean;
-  focused: boolean | null;
-}
-
-interface EditModalProps {
-  show: boolean;
-  onHide: () => void;
-  state: IState;
-}
-
-class BlogEntry extends React.Component<IBlogEntry, IState> {
+class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
   constructor(props: IBlogEntry) {
     super(props);
 
@@ -32,60 +22,19 @@ class BlogEntry extends React.Component<IBlogEntry, IState> {
       body: props.body,
       extraBody: props.extraBody,
       showEditModal: false,
-      focused: false,
+      openShowMore: false,
     };
   }
 
-  editModal(props: EditModalProps) {
-    return (
-      <Modal
-        show={props.show}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        onHide={() => props.onHide()}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Edytuj</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Tytuł</Form.Label>
-              <Form.Control
-                placeholder="Podaj tytuł wpisu"
-                value={props.state.title}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Data</Form.Label>
-              <Form.Control placeholder="Data" value={props.state.date} />
-            </Form.Group>
-
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Treść</Form.Label>
-              <Form.Control as="textarea" rows="4" value={props.state.body} />
-            </Form.Group>
-
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Treść dodatkowa</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows="4"
-                value={props.state.extraBody}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => props.onHide()}>Zapisz</Button>
-          <Button onClick={() => props.onHide()} variant="secondary">
-            Zamknij
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
+  updateState(blogEntry: IBlogEntry): void {
+    this.setState({
+      id: blogEntry.id,
+      title: blogEntry.title,
+      slug: blogEntry.slug,
+      date: blogEntry.date,
+      body: blogEntry.body,
+      extraBody: blogEntry.extraBody,
+    });
   }
 
   updateShowEditModal(state: boolean): void {
@@ -115,7 +64,7 @@ class BlogEntry extends React.Component<IBlogEntry, IState> {
 
         <h2>
           <a
-            href={`aktualnosci/${this.state.slug}`}
+            href={`./${this.state.slug}`}
             className="text-reset font-weight-bold"
           >
             {this.state.title}
@@ -126,10 +75,32 @@ class BlogEntry extends React.Component<IBlogEntry, IState> {
 
         <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
 
-        <this.editModal
-          show={this.state.showEditModal}
-          onHide={() => this.updateShowEditModal(false)}
-          state={this.state}
+        {this.state.extraBody.length > 0 && (
+          <>
+            <Button
+              onClick={() => this.setState({ openShowMore: true })}
+              aria-controls="example-collapse-text"
+              aria-expanded={this.state.openShowMore}
+              size="lg"
+              variant="secondary"
+              hidden={this.state.openShowMore}
+              block
+            >
+              Czytaj więcej
+            </Button>
+
+            <Collapse in={this.state.openShowMore}>
+              <div className="text-justify" id="example-collapse-text">
+                {ReactHtmlParser(this.state.extraBody)}
+              </div>
+            </Collapse>
+          </>
+        )}
+        <BlogEditModal
+          data={this.state}
+          showModal={this.state.showEditModal}
+          hideModal={() => this.setState({ showEditModal: false })}
+          afterUpdate={(blogEntry) => this.updateState(blogEntry)}
         />
       </div>
     );
