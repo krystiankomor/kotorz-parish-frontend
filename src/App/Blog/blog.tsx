@@ -1,15 +1,29 @@
 import React from "react";
 import { BlogEntry } from "./BlogEntry";
 import { IBlogEntry } from "./IBlogEntry";
-import { BASE_API_URL, BLOG_URL } from "../settings"
+import { BASE_API_URL, BLOG_URL } from "../settings";
+import { CreatePostModal } from "./CreatePostModal";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface State {
   entries: IBlogEntry[];
+  showCreatePostModal: boolean;
 }
 
 export class Blog extends React.Component {
   state: State = {
     entries: [],
+    showCreatePostModal: false,
+  };
+
+  emptyBlogEntry: IBlogEntry = {
+    id: undefined,
+    title: undefined,
+    slug: undefined,
+    date: undefined,
+    body: "",
+    extraBody: "",
   };
 
   makeRequestAndUpdateState(): void {
@@ -89,7 +103,16 @@ export class Blog extends React.Component {
 
   render() {
     return (
-      <div>
+      <>
+        <Button onClick={() => this.setState({ showCreatePostModal: true })}>
+          <FontAwesomeIcon icon="plus" /> Dodaj wpis
+        </Button>
+        <CreatePostModal
+          data={this.emptyBlogEntry}
+          showModal={this.state.showCreatePostModal}
+          hideModal={() => this.setState({ showCreatePostModal: false })}
+          afterUpdate={(newPost) => this.makeRequestAndUpdateState()}
+        />
         {this.state.entries.map((el) => (
           <BlogEntry
             id={el.id}
@@ -101,7 +124,7 @@ export class Blog extends React.Component {
             extraBody={el.extraBody}
           />
         ))}
-      </div>
+      </>
     );
   }
 }
