@@ -1,4 +1,11 @@
 .ql-editor {
     min-height: 200px;
     max-height: 500px;
+    line-height: inherit;
+    padding: 16px;
+}
+
+.ql-container {
+    font-family: inherit;
+    font-size: inherit;
 }

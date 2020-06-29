@@ -9,6 +9,10 @@ import { IBlogState } from "./IBlogState";
 import { BlogEditModal } from "./BlogEditModal";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
+import moment from "moment";
+import "moment/locale/pl";
+
+moment.locale("pl");
 
 class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
   constructor(props: IBlogEntry) {
@@ -71,11 +75,13 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
           </a>
         </h2>
 
-        <div className="mb-2 text-muted">{this.state.date}</div>
+        <div className="mb-2 text-muted">
+        {moment(this.state.date, "YYYY-MM-DD").format("dddd, D MMMM YYYY")}
+        </div>
 
         <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
 
-        {this.state.extraBody.length > 0 && (
+        {this.state.extraBody !== null && this.state.extraBody.length > 0 && (
           <>
             <Button
               onClick={() => this.setState({ openShowMore: true })}
