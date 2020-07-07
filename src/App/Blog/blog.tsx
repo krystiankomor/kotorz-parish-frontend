@@ -104,15 +104,21 @@ export class Blog extends React.Component {
   render() {
     return (
       <>
-        <Button onClick={() => this.setState({ showCreatePostModal: true })}>
+        <Button
+          variant="success"
+          onClick={() => this.setState({ showCreatePostModal: true })}
+          className="my-3"
+        >
           <FontAwesomeIcon icon="plus" /> Dodaj wpis
         </Button>
+
         <CreatePostModal
           data={this.emptyBlogEntry}
           showModal={this.state.showCreatePostModal}
           hideModal={() => this.setState({ showCreatePostModal: false })}
           afterUpdate={(newPost) => this.makeRequestAndUpdateState()}
         />
+
         {this.state.entries.map((el) => (
           <BlogEntry
             id={el.id}

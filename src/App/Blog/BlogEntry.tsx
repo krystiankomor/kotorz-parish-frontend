@@ -11,6 +11,7 @@ import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 import moment from "moment";
 import "moment/locale/pl";
+import Modal from "react-bootstrap/Modal";
 
 moment.locale("pl");
 
@@ -26,6 +27,7 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
       body: props.body,
       extraBody: props.extraBody,
       showEditModal: false,
+      showDeleteModal: false,
       openShowMore: false,
     };
   }
@@ -45,6 +47,10 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
     this.setState({ showEditModal: state });
   }
 
+  updateShowDeleteModal(state: boolean): void {
+    this.setState({ showDeleteModal: state });
+  }
+
   render() {
     return (
       <div className="p-3">
@@ -52,7 +58,7 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
           alignRight
           id={`${uuidv4()}`}
           className="float-right"
-          variant="primary"
+          variant="secondary"
           title={<FontAwesomeIcon icon="cog" />}
         >
           <Dropdown.Item onClick={() => this.updateShowEditModal(true)}>
@@ -61,7 +67,10 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
 
           <Dropdown.Divider />
 
-          <Dropdown.Item href="#/action-2" className="text-danger">
+          <Dropdown.Item
+            onClick={() => this.updateShowDeleteModal(true)}
+            className="text-danger"
+          >
             <FontAwesomeIcon icon="trash-alt" /> Usuń
           </Dropdown.Item>
         </DropdownButton>
@@ -76,7 +85,7 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
         </h2>
 
         <div className="mb-2 text-muted">
-        {moment(this.state.date, "YYYY-MM-DD").format("dddd, D MMMM YYYY")}
+          {moment(this.state.date, "YYYY-MM-DD").format("dddd, D MMMM YYYY")}
         </div>
 
         <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
@@ -88,11 +97,12 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
               aria-controls="example-collapse-text"
               aria-expanded={this.state.openShowMore}
               size="lg"
-              variant="secondary"
+              variant="info"
               hidden={this.state.openShowMore}
+              className="my-3"
               block
             >
-              Czytaj więcej
+              Czytaj więcej...
             </Button>
 
             <Collapse in={this.state.openShowMore}>
@@ -108,6 +118,28 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
           hideModal={() => this.setState({ showEditModal: false })}
           afterUpdate={(blogEntry) => this.updateState(blogEntry)}
         />
+        <Modal
+          size="sm"
+          show={this.state.showDeleteModal}
+          onHide={() => this.updateShowDeleteModal(false)}
+          aria-labelledby="example-modal-sizes-title-sm"
+          centered
+        >
+          <Modal.Body>
+            <p>Czy chcesz usunąć wpis?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger">
+              <FontAwesomeIcon icon="trash-alt" /> Usuń
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => this.updateShowDeleteModal(false)}
+            >
+              Zamknij
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
