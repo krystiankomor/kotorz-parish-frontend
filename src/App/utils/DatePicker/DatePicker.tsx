@@ -1,7 +1,6 @@
 import React from "react";
 import "react-dates/initialize";
 import { SingleDatePicker } from "react-dates";
-import { API_DATE_FORMAT } from "../settings";
 import { moment } from "../Moment";
 import { IDatePickerProps } from "./interfaces";
 
@@ -9,7 +8,7 @@ export class DatePicker extends React.Component<IDatePickerProps> {
   render() {
     return (
       <SingleDatePicker
-        date={moment(this.props.date, API_DATE_FORMAT)}
+        date={moment(this.props.date, this.props.dateFormat)}
         onDateChange={this.props.onDateChange}
         focused={this.props.focused}
         onFocusChange={this.props.onFocusChange}

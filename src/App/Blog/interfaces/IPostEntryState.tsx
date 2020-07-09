@@ -1,7 +1,7 @@
-import { IPostEntry } from "./IPostEntry";
-
-export interface IPostEntryState extends IPostEntry {
+import { IPost } from "./IPost";
+export interface IPostEntryState extends IPost {
   showEditModal: boolean;
   showDeleteModal: boolean;
-  openShowMore: boolean;
+  showPost: boolean;
+  isDeleted: boolean;
 }

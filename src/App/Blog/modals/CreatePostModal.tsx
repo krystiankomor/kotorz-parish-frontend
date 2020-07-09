@@ -1,15 +1,12 @@
 import React from "react";
+
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
+import { IPostModalState, IPost, IPostModal } from "../interfaces";
+import { TextEditor, DatePicker, moment } from "../../utils";
 import { BASE_API_URL, BLOG_URL, API_DATE_FORMAT } from "../../utils/settings";
-import { IPostModal } from "../interfaces/IPostModal";
-
-import { IPostModalState } from "../interfaces";
-import { TextEditor } from "../../utils/TextEditor";
-import { DatePicker } from "../../utils/DatePicker";
-import { moment } from "../../utils/Moment";
 
 type FormControlElement =
   | HTMLInputElement
@@ -23,31 +20,33 @@ export class CreatePostModal extends React.Component<
   constructor(parameters: IPostModal) {
     super(parameters);
 
-    let { post } = parameters;
-
-    this.state = {
-      id: post.id || undefined,
-      title: post.title || undefined,
-      slug: post.slug || undefined,
-      date: post.date || moment().format(API_DATE_FORMAT),
-      body: post.body || "",
-      extraBody: post.extraBody || "",
-      showDatePicker: false,
-    };
+    this.state = this.getPostModalStateOrDefault(parameters.post);
   }
 
   modalTitle: String = "Utwórz wpis";
 
+  defaultPostModalState: IPostModalState = {
+    id: undefined,
+    title: "",
+    slug: "",
+    date: moment().format(API_DATE_FORMAT),
+    body: "",
+    extraBody: "",
+    showDatePicker: false,
+  };
+
+  getPostModalStateOrDefault(post: IPost | undefined): IPostModalState {
+    if (post)
+      return {
+        ...post,
+        showDatePicker: false,
+      };
+
+    return this.defaultPostModalState;
+  }
+
   resetState(): void {
-    this.setState({
-      id: undefined,
-      title: undefined,
-      slug: undefined,
-      date: moment().format(API_DATE_FORMAT),
-      body: "",
-      extraBody: "",
-      showDatePicker: false,
-    });
+    this.setState(this.defaultPostModalState);
   }
 
   handleInputChange(event: React.ChangeEvent<FormControlElement>) {
@@ -119,10 +118,11 @@ export class CreatePostModal extends React.Component<
               <div>
                 <DatePicker
                   date={this.state.date}
+                  dateFormat={API_DATE_FORMAT}
+                  focused={this.state.showDatePicker}
                   onDateChange={(newDate: any) => {
                     this.setState({ date: newDate?.format(API_DATE_FORMAT) });
                   }}
-                  focused={this.state.showDatePicker}
                   onFocusChange={() => {
                     this.setState({
                       showDatePicker: !this.state.showDatePicker,

@@ -9,6 +9,7 @@ import {
   faTrashAlt,
   faEyeSlash,
   faPlus,
+  faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 
@@ -19,7 +20,7 @@ import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
 
-library.add(faEdit, faCog, faTrashAlt, faEyeSlash, faYoutube, faPlus);
+library.add(faEdit, faCog, faTrashAlt, faEyeSlash, faYoutube, faPlus, faAngleDown);
 
 class KotorzMainComponent extends React.Component {
   render() {

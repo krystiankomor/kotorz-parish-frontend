@@ -1,45 +1,33 @@
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import Jumbotron from "react-bootstrap/Jumbotron";
 import ReactHtmlParser from "react-html-parser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
 
-import { IPostEntry, IPostEntryState } from "./interfaces";
+import { IPostEntry, IPostEntryState, IPost } from "./interfaces";
 import { EditPostModal, DeletePostModal } from "./modals";
+import { PostReadMore } from "./extra/PostReadMore";
 
-import Button from "react-bootstrap/Button";
-import Collapse from "react-bootstrap/Collapse";
-import { moment } from "../utils/Moment";
+import { moment } from "../utils";
 import { BASE_API_URL, BLOG_URL, API_DATE_FORMAT } from "../utils/settings";
 
-class BlogEntry extends React.Component<IPostEntry, IPostEntryState> {
+class PostEntry extends React.Component<IPostEntry, IPostEntryState> {
   constructor(props: IPostEntry) {
     super(props);
 
     this.state = {
-      id: props.id,
-      title: props.title,
-      slug: props.slug,
-      date: props.date,
-      body: props.body,
-      extraBody: props.extraBody,
-      onDelete: props.onDelete,
+      ...props.data,
       showEditModal: false,
       showDeleteModal: false,
-      openShowMore: false,
+      showPost: true,
+      isDeleted: false,
     };
   }
 
-  updateState(blogEntry: IPostEntry): void {
-    this.setState({
-      id: blogEntry.id,
-      title: blogEntry.title,
-      slug: blogEntry.slug,
-      date: blogEntry.date,
-      body: blogEntry.body,
-      extraBody: blogEntry.extraBody,
-    });
+  updateState(blogEntry: IPost): void {
+    this.setState(blogEntry);
   }
 
   updateShowEditModal(state: boolean): void {
@@ -50,91 +38,84 @@ class BlogEntry extends React.Component<IPostEntry, IPostEntryState> {
     this.setState({ showDeleteModal: state });
   }
 
+  onDelete() {
+    this.setState({ isDeleted: true });
+    this.props.onDelete();
+  }
+
   deletePost() {
     fetch(`${BASE_API_URL}${BLOG_URL}/${this.state.id}`, {
       method: "DELETE",
     })
-      .then((response) => console.log(response.ok))
-      .then(() => this.state.onDelete())
+      .then(() => this.onDelete())
       .then(() => this.updateShowDeleteModal(false))
       .catch((error) => console.error(error));
   }
 
   render() {
     return (
-      <div className="p-3">
-        <DropdownButton
-          alignRight
-          id={`${uuidv4()}`}
-          className="float-right"
-          variant="secondary"
-          title={<FontAwesomeIcon icon="cog" />}
-        >
-          <Dropdown.Item onClick={() => this.updateShowEditModal(true)}>
-            <FontAwesomeIcon icon="edit" /> Edytuj
-          </Dropdown.Item>
+      <>
+        <Jumbotron hidden={!this.state.isDeleted}>
+          <h2 className="text-center text-uppercase">Usunięte</h2>
+        </Jumbotron>
 
-          <Dropdown.Divider />
-
-          <Dropdown.Item
-            onClick={() => this.updateShowDeleteModal(true)}
-            className="text-danger"
+        <div className="p-3" hidden={this.state.isDeleted}>
+          <DropdownButton
+            alignRight
+            id={`${uuidv4()}`}
+            className="float-right"
+            variant="secondary"
+            title={<FontAwesomeIcon icon="cog" />}
           >
-            <FontAwesomeIcon icon="trash-alt" /> Usuń
-          </Dropdown.Item>
-        </DropdownButton>
+            <Dropdown.Item onClick={() => this.updateShowEditModal(true)}>
+              <FontAwesomeIcon icon="edit" /> Edytuj
+            </Dropdown.Item>
 
-        <h2>
-          <a
-            href={`./${this.state.slug}`}
-            className="text-reset font-weight-bold"
-          >
-            {this.state.title}
-          </a>
-        </h2>
+            <Dropdown.Divider />
 
-        <div className="mb-2 text-muted">
-          {moment(this.state.date, API_DATE_FORMAT).format("dddd, D MMMM YYYY")}
-        </div>
-
-        <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
-
-        {this.state.extraBody !== null && this.state.extraBody.length > 0 && (
-          <>
-            <Button
-              onClick={() => this.setState({ openShowMore: true })}
-              aria-controls="example-collapse-text"
-              aria-expanded={this.state.openShowMore}
-              size="lg"
-              variant="info"
-              hidden={this.state.openShowMore}
-              className="my-3"
-              block
+            <Dropdown.Item
+              onClick={() => this.updateShowDeleteModal(true)}
+              className="text-danger"
             >
-              Czytaj więcej...
-            </Button>
+              <FontAwesomeIcon icon="trash-alt" /> Usuń
+            </Dropdown.Item>
+          </DropdownButton>
 
-            <Collapse in={this.state.openShowMore}>
-              <div className="text-justify" id="example-collapse-text">
-                {ReactHtmlParser(this.state.extraBody)}
-              </div>
-            </Collapse>
-          </>
-        )}
-        <EditPostModal
-          post={this.state}
-          showModal={this.state.showEditModal}
-          onHide={() => this.setState({ showEditModal: false })}
-          afterUpdate={(blogEntry) => this.updateState(blogEntry)}
-        />
-        <DeletePostModal
-          onDelete={() => this.deletePost()}
-          onHide={() => this.updateShowDeleteModal(false)}
-          show={this.state.showDeleteModal}
-        />
-      </div>
+          <h2>
+            <a
+              href={`./${this.state.slug}`}
+              className="text-reset font-weight-bold"
+            >
+              {this.state.title}
+            </a>
+          </h2>
+
+          <div className="mb-2 text-muted">
+            {moment(this.state.date, API_DATE_FORMAT).format(
+              "dddd, D MMMM YYYY"
+            )}
+          </div>
+
+          <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
+
+          {this.state.extraBody !== null && this.state.extraBody.length > 0 && (
+            <PostReadMore text={this.state.extraBody} />
+          )}
+          <EditPostModal
+            post={this.state}
+            showModal={this.state.showEditModal}
+            onHide={() => this.setState({ showEditModal: false })}
+            afterUpdate={(blogEntry) => this.updateState(blogEntry)}
+          />
+          <DeletePostModal
+            onDelete={() => this.deletePost()}
+            onHide={() => this.updateShowDeleteModal(false)}
+            show={this.state.showDeleteModal}
+          />
+        </div>
+      </>
     );
   }
 }
 
-export { BlogEntry };
+export { PostEntry };
