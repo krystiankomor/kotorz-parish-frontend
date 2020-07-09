@@ -1,7 +1,7 @@
-import { BASE_API_URL, BLOG_URL } from "../../settings";
+import { BASE_API_URL, BLOG_URL } from "../../utils/settings";
 import { CreatePostModal } from "./CreatePostModal";
 
-export class BlogEditModal extends CreatePostModal {
+export class EditPostModal extends CreatePostModal {
   modalTitle = "Edytuj wpis";
 
   submit() {

@@ -2,25 +2,19 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import ReactQuill from "react-quill";
 
-import { BASE_API_URL, BLOG_URL } from "../../settings";
+import { BASE_API_URL, BLOG_URL, API_DATE_FORMAT } from "../../utils/settings";
 import { IPostModal } from "../interfaces/IPostModal";
 
-import "react-dates/initialize";
-import { SingleDatePicker } from "react-dates";
-import moment from "moment";
-import "moment/locale/pl";
-import { IPostModalState } from "../interfaces/IPostModalState";
-
-moment.locale("pl");
+import { IPostModalState } from "../interfaces";
+import { TextEditor } from "../../utils/TextEditor";
+import { DatePicker } from "../../utils/DatePicker";
+import { moment } from "../../utils/Moment";
 
 type FormControlElement =
   | HTMLInputElement
   | HTMLSelectElement
   | HTMLTextAreaElement;
-
-let DATE_FORMAT = "YYYY-MM-DD";
 
 export class CreatePostModal extends React.Component<
   IPostModal,
@@ -35,7 +29,7 @@ export class CreatePostModal extends React.Component<
       id: post.id || undefined,
       title: post.title || undefined,
       slug: post.slug || undefined,
-      date: post.date || moment().format(DATE_FORMAT),
+      date: post.date || moment().format(API_DATE_FORMAT),
       body: post.body || "",
       extraBody: post.extraBody || "",
       showDatePicker: false,
@@ -44,37 +38,12 @@ export class CreatePostModal extends React.Component<
 
   modalTitle: String = "Utwórz wpis";
 
-  modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      [{ align: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      ["clean"],
-    ],
-  };
-
-  formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "align",
-    "list",
-    "bullet",
-    "link",
-    "image",
-  ];
-
   resetState(): void {
     this.setState({
       id: undefined,
       title: undefined,
       slug: undefined,
-      date: moment().format(DATE_FORMAT),
+      date: moment().format(API_DATE_FORMAT),
       body: "",
       extraBody: "",
       showDatePicker: false,
@@ -147,17 +116,11 @@ export class CreatePostModal extends React.Component<
 
             <Form.Group>
               <Form.Label>Data</Form.Label>
-              {/* <Form.Control
-                placeholder="Data"
-                value={this.state.date}
-                name="date"
-                onChange={this.handleInputChange.bind(this)}
-              /> */}
               <div>
-                <SingleDatePicker
-                  date={moment(this.state.date, DATE_FORMAT)}
+                <DatePicker
+                  date={this.state.date}
                   onDateChange={(newDate: any) => {
-                    this.setState({ date: newDate?.format(DATE_FORMAT) });
+                    this.setState({ date: newDate?.format(API_DATE_FORMAT) });
                   }}
                   focused={this.state.showDatePicker}
                   onFocusChange={() => {
@@ -165,32 +128,23 @@ export class CreatePostModal extends React.Component<
                       showDatePicker: !this.state.showDatePicker,
                     });
                   }}
-                  id="date-picker"
-                  numberOfMonths={1}
-                  isOutsideRange={() => false}
                 />
               </div>
             </Form.Group>
 
             <Form.Group>
               <Form.Label>Treść</Form.Label>
-              <ReactQuill
-                theme="snow"
+              <TextEditor
                 value={this.state.body}
                 onChange={this.handleBodyChange.bind(this)}
-                modules={this.modules}
-                formats={this.formats}
               />
             </Form.Group>
 
             <Form.Group>
               <Form.Label>Treść dodatkowa</Form.Label>
-              <ReactQuill
-                theme="snow"
+              <TextEditor
                 value={this.state.extraBody}
                 onChange={this.handleExtraBodyChange.bind(this)}
-                modules={this.modules}
-                formats={this.formats}
               />
               <Form.Text muted>
                 Tekst ten będzie widoczny po naciśnięciu przycisku "Czytaj

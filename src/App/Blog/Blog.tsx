@@ -1,8 +1,8 @@
 import React from "react";
 import { BlogEntry } from "./Post";
-import { IPostEntry } from "./interfaces/IPostEntry";
-import { BASE_API_URL, BLOG_URL } from "../settings";
-import { CreatePostModal } from "./modals/CreatePostModal";
+import { IPostEntry } from "./interfaces";
+import { BASE_API_URL, BLOG_URL } from "../utils/settings";
+import { CreatePostModal } from "./modals";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

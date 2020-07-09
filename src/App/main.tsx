@@ -8,11 +8,11 @@ import {
   faEdit,
   faTrashAlt,
   faEyeSlash,
-  faPlus
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 
-import logo from "./images/top.jpg";
+import logo from "../images/top.jpg";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";

@@ -4,17 +4,14 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import ReactHtmlParser from "react-html-parser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
-import { IPostEntry } from "./interfaces/IPostEntry";
-import { IPostEntryState } from "./interfaces/IPostEntryState";
-import { BlogEditModal } from "./modals/BlogEditModal";
+
+import { IPostEntry, IPostEntryState } from "./interfaces";
+import { EditPostModal, DeletePostModal } from "./modals";
+
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
-import moment from "moment";
-import "moment/locale/pl";
-import Modal from "react-bootstrap/Modal";
-import { BASE_API_URL, BLOG_URL } from "../settings";
-
-moment.locale("pl");
+import { moment } from "../utils/Moment";
+import { BASE_API_URL, BLOG_URL, API_DATE_FORMAT } from "../utils/settings";
 
 class BlogEntry extends React.Component<IPostEntry, IPostEntryState> {
   constructor(props: IPostEntry) {
@@ -97,7 +94,7 @@ class BlogEntry extends React.Component<IPostEntry, IPostEntryState> {
         </h2>
 
         <div className="mb-2 text-muted">
-          {moment(this.state.date, "YYYY-MM-DD").format("dddd, D MMMM YYYY")}
+          {moment(this.state.date, API_DATE_FORMAT).format("dddd, D MMMM YYYY")}
         </div>
 
         <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>
@@ -124,34 +121,17 @@ class BlogEntry extends React.Component<IPostEntry, IPostEntryState> {
             </Collapse>
           </>
         )}
-        <BlogEditModal
+        <EditPostModal
           post={this.state}
           showModal={this.state.showEditModal}
           onHide={() => this.setState({ showEditModal: false })}
           afterUpdate={(blogEntry) => this.updateState(blogEntry)}
         />
-        <Modal
-          size="sm"
-          show={this.state.showDeleteModal}
+        <DeletePostModal
+          onDelete={() => this.deletePost()}
           onHide={() => this.updateShowDeleteModal(false)}
-          aria-labelledby="example-modal-sizes-title-sm"
-          centered
-        >
-          <Modal.Body>
-            <p>Czy chcesz usunąć wpis?</p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="danger" onClick={() => this.deletePost()}>
-              <FontAwesomeIcon icon="trash-alt" /> Usuń
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => this.updateShowDeleteModal(false)}
-            >
-              Zamknij
-            </Button>
-          </Modal.Footer>
-        </Modal>
+          show={this.state.showDeleteModal}
+        />
       </div>
     );
   }
