@@ -4,14 +4,14 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import ReactQuill from "react-quill";
 
-import { IBlogEntry } from "./IBlogEntry";
-import { BASE_API_URL, BLOG_URL } from "../settings";
-import { IBlogModal } from "./IBlogModal";
+import { BASE_API_URL, BLOG_URL } from "../../settings";
+import { IPostModal } from "../interfaces/IPostModal";
 
 import "react-dates/initialize";
 import { SingleDatePicker } from "react-dates";
 import moment from "moment";
 import "moment/locale/pl";
+import { IPostModalState } from "../interfaces/IPostModalState";
 
 moment.locale("pl");
 
@@ -20,28 +20,24 @@ type FormControlElement =
   | HTMLSelectElement
   | HTMLTextAreaElement;
 
-interface IBlogModalEntry extends IBlogEntry {
-  showDatePicker: boolean;
-}
-
 let DATE_FORMAT = "YYYY-MM-DD";
 
 export class CreatePostModal extends React.Component<
-  IBlogModal,
-  IBlogModalEntry
+  IPostModal,
+  IPostModalState
 > {
-  constructor(parameters: IBlogModal) {
+  constructor(parameters: IPostModal) {
     super(parameters);
 
-    let { data } = parameters;
+    let { post } = parameters;
 
     this.state = {
-      id: data.id || undefined,
-      title: data.title || undefined,
-      slug: data.slug || undefined,
-      date: data.date || moment().format(DATE_FORMAT),
-      body: data.body || "",
-      extraBody: data.extraBody || "",
+      id: post.id || undefined,
+      title: post.title || undefined,
+      slug: post.slug || undefined,
+      date: post.date || moment().format(DATE_FORMAT),
+      body: post.body || "",
+      extraBody: post.extraBody || "",
       showDatePicker: false,
     };
   }
@@ -118,7 +114,7 @@ export class CreatePostModal extends React.Component<
       .then((response) => response.json())
       .then((data) => {
         this.props.afterUpdate(data);
-        this.props.hideModal();
+        this.props.onHide();
         this.resetState();
       })
       .catch((error) => console.error(error));
@@ -128,7 +124,7 @@ export class CreatePostModal extends React.Component<
     return (
       <Modal
         show={this.props.showModal}
-        onHide={this.props.hideModal}
+        onHide={this.props.onHide}
         size="lg"
         aria-labelledby="modal-title"
         centered
@@ -207,11 +203,7 @@ export class CreatePostModal extends React.Component<
           <Button type="submit" onClick={this.submit.bind(this)}>
             Zapisz
           </Button>
-          <Button
-            type="button"
-            onClick={this.props.hideModal}
-            variant="secondary"
-          >
+          <Button type="button" onClick={this.props.onHide} variant="secondary">
             Zamknij
           </Button>
         </Modal.Footer>

@@ -1,7 +1,7 @@
 import React from "react";
-import { Blog } from "./Blog/blog";
+import { Blog } from "./Blog/Blog";
 import { RightSidebar } from "./right";
-import "./main.scss";
+import "../styles/main.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faCog,

@@ -1,12 +1,12 @@
 .right-column {
-  background: url("../images/kreska-pion.png") left repeat-y;
+  background: url(../../images/kreska-pion.png) left repeat-y;
   line-height: $column-line-height;
 
   &__row {
     margin-bottom: 2rem;
 
     h4 {
-      background: url(../images/naglowki/h4.jpg) repeat-x top;
+      background: url(../../images/naglowki/h4.jpg) repeat-x top;
       padding: 10px 20px;
       margin: 0 -1.5rem;
       margin-bottom: 1rem;

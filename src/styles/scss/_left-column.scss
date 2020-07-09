@@ -1,12 +1,12 @@
 .left-column {
-  background: url("../images/kreska-pion.png") right repeat-y;
+  background: url(../../images/kreska-pion.png) right repeat-y;
 
   .nav {
     line-height: $column-line-height;
     font-size: $menu-font-size;
-  
+
     a {
-      background: url(../images/kreska-li.png) repeat-x top;
+      background: url(../../images/kreska-li.png) repeat-x top;
       text-transform: uppercase;
       color: $dark;
       word-wrap: anywhere;

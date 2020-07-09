@@ -4,19 +4,20 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import ReactHtmlParser from "react-html-parser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
-import { IBlogEntry } from "./IBlogEntry";
-import { IBlogState } from "./IBlogState";
-import { BlogEditModal } from "./BlogEditModal";
+import { IPostEntry } from "./interfaces/IPostEntry";
+import { IPostEntryState } from "./interfaces/IPostEntryState";
+import { BlogEditModal } from "./modals/BlogEditModal";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 import moment from "moment";
 import "moment/locale/pl";
 import Modal from "react-bootstrap/Modal";
+import { BASE_API_URL, BLOG_URL } from "../settings";
 
 moment.locale("pl");
 
-class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
-  constructor(props: IBlogEntry) {
+class BlogEntry extends React.Component<IPostEntry, IPostEntryState> {
+  constructor(props: IPostEntry) {
     super(props);
 
     this.state = {
@@ -26,13 +27,14 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
       date: props.date,
       body: props.body,
       extraBody: props.extraBody,
+      onDelete: props.onDelete,
       showEditModal: false,
       showDeleteModal: false,
       openShowMore: false,
     };
   }
 
-  updateState(blogEntry: IBlogEntry): void {
+  updateState(blogEntry: IPostEntry): void {
     this.setState({
       id: blogEntry.id,
       title: blogEntry.title,
@@ -49,6 +51,16 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
 
   updateShowDeleteModal(state: boolean): void {
     this.setState({ showDeleteModal: state });
+  }
+
+  deletePost() {
+    fetch(`${BASE_API_URL}${BLOG_URL}/${this.state.id}`, {
+      method: "DELETE",
+    })
+      .then((response) => console.log(response.ok))
+      .then(() => this.state.onDelete())
+      .then(() => this.updateShowDeleteModal(false))
+      .catch((error) => console.error(error));
   }
 
   render() {
@@ -113,9 +125,9 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
           </>
         )}
         <BlogEditModal
-          data={this.state}
+          post={this.state}
           showModal={this.state.showEditModal}
-          hideModal={() => this.setState({ showEditModal: false })}
+          onHide={() => this.setState({ showEditModal: false })}
           afterUpdate={(blogEntry) => this.updateState(blogEntry)}
         />
         <Modal
@@ -129,7 +141,7 @@ class BlogEntry extends React.Component<IBlogEntry, IBlogState> {
             <p>Czy chcesz usunąć wpis?</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="danger">
+            <Button variant="danger" onClick={() => this.deletePost()}>
               <FontAwesomeIcon icon="trash-alt" /> Usuń
             </Button>
             <Button

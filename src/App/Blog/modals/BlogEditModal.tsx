@@ -1,4 +1,4 @@
-import { BASE_API_URL, BLOG_URL } from "../settings";
+import { BASE_API_URL, BLOG_URL } from "../../settings";
 import { CreatePostModal } from "./CreatePostModal";
 
 export class BlogEditModal extends CreatePostModal {
@@ -15,7 +15,7 @@ export class BlogEditModal extends CreatePostModal {
       .then((response) => response.json())
       .then((data) => {
         this.props.afterUpdate(data);
-        this.props.hideModal();
+        this.props.onHide();
       })
       .catch((error) => console.error(error));
   }
