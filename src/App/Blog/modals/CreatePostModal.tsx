@@ -1,12 +1,19 @@
 import React from "react";
 
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
-
 import { IPostModalState, IPost, IPostModal } from "../interfaces";
-import { TextEditor, DatePicker, moment } from "../../utils";
-import { BASE_API_URL, BLOG_URL, API_DATE_FORMAT } from "../../utils/settings";
+// import { TextEditor, DatePicker, moment } from "../../utils";
+import {
+  BASE_API_URL,
+  BLOG_URL,
+  POLISH_LOCALE_FOR_CALENDAR,
+  SHOW_DATE_FORMAT,
+  CALENDAR_DATE_RANGE,
+} from "../../utils/settings";
+import { Dialog } from "primereact/dialog";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Calendar } from "primereact/calendar";
+import { Editor } from "primereact/editor";
 
 type FormControlElement =
   | HTMLInputElement
@@ -29,11 +36,22 @@ export class CreatePostModal extends React.Component<
     id: undefined,
     title: "",
     slug: "",
-    date: moment().format(API_DATE_FORMAT),
+    date: new Date(),
     body: "",
     extraBody: "",
     showDatePicker: false,
   };
+
+  footer = (
+    <div>
+      <Button
+        label="Zapisz"
+        icon="pi pi-save"
+        onClick={this.submit.bind(this)}
+      />
+      <Button label="Anuluj" icon="pi pi-times" onClick={this.props.onHide} />
+    </div>
+  );
 
   getPostModalStateOrDefault(post: IPost | undefined): IPostModalState {
     if (post)
@@ -49,10 +67,10 @@ export class CreatePostModal extends React.Component<
     this.setState(this.defaultPostModalState);
   }
 
-  handleInputChange(event: React.ChangeEvent<FormControlElement>) {
+  handleInputChange(event: any) {
     let target = event.target;
     let value = target.value;
-    let name = target.name;
+    let name = target.id;
 
     this.setState({
       [name]: value,
@@ -90,78 +108,108 @@ export class CreatePostModal extends React.Component<
 
   render() {
     return (
-      <Modal
-        show={this.props.showModal}
+      <Dialog
+        visible={this.props.showModal}
         onHide={this.props.onHide}
-        size="lg"
-        aria-labelledby="modal-title"
-        centered
-        scrollable
+        header={this.modalTitle}
+        appendTo={document.body}
+        footer={this.footer}
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="modal-title">{this.modalTitle}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={this.handleFormSubmit.bind(this)}>
-            <Form.Group>
-              <Form.Label>Tytuł</Form.Label>
-              <Form.Control
-                placeholder="Podaj tytuł wpisu"
-                value={this.state.title}
-                name="title"
-                onChange={this.handleInputChange.bind(this)}
-              />
-            </Form.Group>
+        <div className="p-field">
+          <label htmlFor="title" className="p-d-block">
+            Tytuł
+          </label>
+          <InputText
+            value={this.state.title}
+            onChange={this.handleInputChange.bind(this)}
+            id={"title"}
+          />
+        </div>
 
-            <Form.Group>
-              <Form.Label>Data</Form.Label>
-              <div>
-                <DatePicker
-                  date={this.state.date}
-                  dateFormat={API_DATE_FORMAT}
-                  focused={this.state.showDatePicker}
-                  onDateChange={(newDate: any) => {
-                    this.setState({ date: newDate?.format(API_DATE_FORMAT) });
-                  }}
-                  onFocusChange={() => {
-                    this.setState({
-                      showDatePicker: !this.state.showDatePicker,
-                    });
-                  }}
-                />
-              </div>
-            </Form.Group>
+        <div className="p-field">
+          <label htmlFor="date" className="p-d-block">
+            Data
+          </label>
+          <Calendar
+            id="date"
+            value={this.state.date}
+            onChange={this.handleInputChange.bind(this)}
+            dateFormat={SHOW_DATE_FORMAT}
+            appendTo={document.body}
+            locale={POLISH_LOCALE_FOR_CALENDAR}
+            yearRange={CALENDAR_DATE_RANGE}
+            showOnFocus={false}
+            monthNavigator
+            yearNavigator
+            showIcon
+          />
+        </div>
 
-            <Form.Group>
-              <Form.Label>Treść</Form.Label>
-              <TextEditor
-                value={this.state.body}
-                onChange={this.handleBodyChange.bind(this)}
-              />
-            </Form.Group>
+        <div className="p-field">
+          <label htmlFor="body">Treść</label>
+          <Editor
+            id="body"
+            style={{ height: "320px" }}
+            value={this.state.body}
+            onTextChange={(e) => this.setState({ body: e.htmlValue || "" })}
+          />
+        </div>
 
-            <Form.Group>
-              <Form.Label>Treść dodatkowa</Form.Label>
-              <TextEditor
-                value={this.state.extraBody}
-                onChange={this.handleExtraBodyChange.bind(this)}
-              />
-              <Form.Text muted>
-                Tekst ten będzie widoczny po naciśnięciu przycisku "Czytaj
-                więcej". Jeśli pozostanie pusty, przycisk się nie pokaże.
-              </Form.Text>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button type="submit" onClick={this.submit.bind(this)}>
-            Zapisz
-          </Button>
-          <Button type="button" onClick={this.props.onHide} variant="secondary">
-            Zamknij
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <div className="p-field">
+          <label htmlFor="extraBody">Treść dodatkowa</label>
+          <Editor
+            id="extraBody"
+            style={{ height: "320px" }}
+            value={this.state.extraBody}
+            onTextChange={(e) =>
+              this.setState({ extraBody: e.htmlValue || "" })
+            }
+          />
+          <small id="extraBody-help" className="p-d-block">
+            Tekst ten będzie widoczny po naciśnięciu przycisku "Czytaj więcej".
+            Jeśli pozostanie pusty, przycisk się nie pokaże.
+          </small>
+        </div>
+
+        {/* <Form.Group>
+          <Form.Label>Data</Form.Label>
+          <div>
+            <DatePicker
+              date={this.state.date}
+              dateFormat={API_DATE_FORMAT}
+              focused={this.state.showDatePicker}
+              onDateChange={(newDate: any) => {
+                this.setState({ date: newDate?.format(API_DATE_FORMAT) });
+              }}
+              onFocusChange={() => {
+                this.setState({
+                  showDatePicker: !this.state.showDatePicker,
+                });
+              }}
+            />
+          </div>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Treść</Form.Label>
+          <TextEditor
+            value={this.state.body}
+            onChange={this.handleBodyChange.bind(this)}
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Treść dodatkowa</Form.Label>
+          <TextEditor
+            value={this.state.extraBody}
+            onChange={this.handleExtraBodyChange.bind(this)}
+          />
+          <Form.Text muted>
+            Tekst ten będzie widoczny po naciśnięciu przycisku "Czytaj więcej".
+            Jeśli pozostanie pusty, przycisk się nie pokaże.
+          </Form.Text>
+        </Form.Group> */}
+      </Dialog>
     );
   }
 }

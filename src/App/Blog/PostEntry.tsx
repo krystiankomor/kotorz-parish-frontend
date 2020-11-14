@@ -1,9 +1,5 @@
 import React from "react";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Jumbotron from "react-bootstrap/Jumbotron";
 import ReactHtmlParser from "react-html-parser";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from "uuid";
 
 import { IPostEntry, IPostEntryState, IPost } from "./interfaces";
@@ -12,6 +8,7 @@ import { PostReadMore } from "./extra/PostReadMore";
 
 import { moment } from "../utils";
 import { BASE_API_URL, BLOG_URL, API_DATE_FORMAT } from "../utils/settings";
+import { SplitButton } from "primereact/splitbutton";
 
 class PostEntry extends React.Component<IPostEntry, IPostEntryState> {
   constructor(props: IPostEntry) {
@@ -25,6 +22,23 @@ class PostEntry extends React.Component<IPostEntry, IPostEntryState> {
       isDeleted: false,
     };
   }
+
+  actionButtons = [
+    // {
+    //   label: "Edytuj",
+    //   icon: "pi pi-pencil",
+    //   command: () => {
+    //     this.updateShowEditModal(true);
+    //   },
+    // },
+    {
+      label: "Usuń",
+      icon: "pi pi-trash",
+      command: () => {
+        this.updateShowDeleteModal(true);
+      },
+    },
+  ];
 
   updateState(blogEntry: IPost): void {
     this.setState(blogEntry);
@@ -55,45 +69,42 @@ class PostEntry extends React.Component<IPostEntry, IPostEntryState> {
   render() {
     return (
       <>
-        <Jumbotron hidden={!this.state.isDeleted}>
+        {/* <Jumbotron hidden={!this.state.isDeleted}>
           <h2 className="text-center text-uppercase">Usunięte</h2>
-        </Jumbotron>
+        </Jumbotron> */}
 
         <div className="p-3" hidden={this.state.isDeleted}>
-          <DropdownButton
-            alignRight
-            id={`${uuidv4()}`}
-            className="float-right"
-            variant="secondary"
-            title={<FontAwesomeIcon icon="cog" />}
-          >
-            <Dropdown.Item onClick={() => this.updateShowEditModal(true)}>
-              <FontAwesomeIcon icon="edit" /> Edytuj
-            </Dropdown.Item>
-
-            <Dropdown.Divider />
-
-            <Dropdown.Item
-              onClick={() => this.updateShowDeleteModal(true)}
-              className="text-danger"
-            >
-              <FontAwesomeIcon icon="trash-alt" /> Usuń
-            </Dropdown.Item>
-          </DropdownButton>
-
-          <h2>
-            <a
-              href={`./${this.state.slug}`}
-              className="text-reset font-weight-bold"
-            >
-              {this.state.title}
-            </a>
-          </h2>
+          <div className="p-d-flex p-jc-between">
+            <div>
+              <h2>
+                <a
+                  href={`./${this.state.slug}`}
+                  className="text-reset font-weight-bold"
+                >
+                  {this.state.title}
+                </a>
+              </h2>
+            </div>
+            <div>
+              <SplitButton
+                className="p-button-secondary p-button-sm"
+                icon="pi pi-pencil"
+                label={"Edytuj"}
+                model={this.actionButtons}
+                onClick={(e) => {
+                  this.updateShowEditModal(true);
+                }}
+              ></SplitButton>
+            </div>
+          </div>
 
           <div className="mb-2 text-muted">
-            {moment(this.state.date, API_DATE_FORMAT).format(
-              "dddd, D MMMM YYYY"
-            )}
+            {this.state.date.toLocaleDateString("pl-PL", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </div>
 
           <div className="text-justify">{ReactHtmlParser(this.state.body)}</div>

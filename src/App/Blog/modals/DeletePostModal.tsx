@@ -1,31 +1,45 @@
 import React from "react";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IDeletePostModal } from "../interfaces";
+import { Dialog } from "primereact/dialog";
+import { Button } from "primereact/button";
 
 export class DeletePostModal extends React.Component<IDeletePostModal> {
+  renderFooter() {
+    return (
+      <div>
+        <Button
+          label="No"
+          icon="pi pi-times"
+          onClick={this.props.onHide}
+          className="p-button-text"
+        />
+        <Button
+          label="Yes"
+          icon="pi pi-check"
+          onClick={this.props.onDelete}
+          autoFocus
+        />
+      </div>
+    );
+  }
   render() {
     return (
-      <Modal
-        size="sm"
-        show={this.props.show}
+      <Dialog
+        header="Confirmation"
+        visible={this.props.show}
+        modal
+        style={{ width: "350px" }}
+        footer={this.renderFooter()}
         onHide={this.props.onHide}
-        aria-labelledby="example-modal-sizes-title-sm"
-        centered
       >
-        <Modal.Body>
-          <p>Czy chcesz usunąć wpis?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="danger" onClick={this.props.onDelete}>
-            <FontAwesomeIcon icon="trash-alt" /> Usuń
-          </Button>
-          <Button variant="secondary" onClick={this.props.onHide}>
-            Zamknij
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle p-mr-3"
+            style={{ fontSize: "2rem" }}
+          />
+          <span>Are you sure you want to proceed?</span>
+        </div>
+      </Dialog>
     );
   }
 }

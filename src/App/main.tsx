@@ -2,43 +2,49 @@ import React from "react";
 import { Blog } from "./Blog/Blog";
 import { RightSidebar } from "./right";
 import "../styles/main.scss";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faCog,
-  faEdit,
-  faTrashAlt,
-  faEyeSlash,
-  faPlus,
-  faAngleDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 
 import logo from "../images/top.jpg";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Image from "react-bootstrap/Image";
-import Nav from "react-bootstrap/Nav";
 
-library.add(faEdit, faCog, faTrashAlt, faEyeSlash, faYoutube, faPlus, faAngleDown);
+import PrimeReact from "primereact/utils";
+import { Menu } from "primereact/menu";
+
+import { MenuItem } from "primereact/api";
+
+PrimeReact.ripple = true;
 
 class KotorzMainComponent extends React.Component {
+  items: MenuItem[] = [
+    {
+      label: "Aktualności",
+    },
+    {
+      label: "Ewangelia na dziś",
+    },
+    {
+      label: "Odeszli od nas...",
+    },
+    {
+      label: "Ochrzczeni",
+    },
+    {
+      label: "Galeria",
+    },
+  ];
+
   render() {
     return (
-      <div className="page">
-        <Container>
-          <Row>
-            <Col className="page__header p-0">
-              <Image src={logo} fluid />
-            </Col>
-          </Row>
-          <Row>
-            <Col className="p-0">
-              <div className="page__main-container">
-                <div className="page__main-container--offset">
-                  <Row className="p-0 m-0">
-                    <Col sm={3} className="left-column pt-4 pr-0 pb-4 pl-4">
-                      <Nav className="flex-column">
+      <div className="page p-reset p-component p-px-6">
+        <div className="p-grid">
+          <div className="page__header p-col-12 p-d-flex p-p-0">
+            <img src={logo} className="" />
+          </div>
+          <div className="p-col-12 p-p-0">
+            <div className="page__main-container ">
+              <div className="page__main-container--offset">
+                <div className="p-grid">
+                  <div className="left-column p-col-3 p-pt-5 p-pl-5">
+                    <Menu model={this.items} />
+                    {/* <Nav className="flex-column">
                         <Nav.Link>Aktualności</Nav.Link>
                         <Nav.Link>Ewangelia na dziś</Nav.Link>
                         <Nav.Link>Odeszli od nas...</Nav.Link>
@@ -72,21 +78,22 @@ class KotorzMainComponent extends React.Component {
                         <Nav.Link>Duszpasterstwo</Nav.Link>
                         <Nav.Link>Kancelaria</Nav.Link>
                         <Nav.Link>Administracja</Nav.Link>
-                      </Nav>
-                    </Col>
-                    <Col className="p-4">
-                      <h1 className="text-center display-4 text-orange">
-                        Aktualności
-                      </h1>
-                      <Blog />
-                    </Col>
+                      </Nav> */}
+                  </div>
+                  <div className="p-col">
+                    <h1 className="text-center display-4 text-orange">
+                      Aktualności
+                    </h1>
+                    <Blog />
+                  </div>
+                  <div className="p-col-3">
                     <RightSidebar />
-                  </Row>
+                  </div>
                 </div>
               </div>
-            </Col>
-          </Row>
-        </Container>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

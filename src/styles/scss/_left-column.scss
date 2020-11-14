@@ -1,22 +1,24 @@
 .left-column {
   background: url(../../images/kreska-pion.png) right repeat-y;
+  padding-right: 1px;
 
-  .nav {
+  .p-menu {
     line-height: $column-line-height;
-    font-size: $menu-font-size;
+    border: 0 !important;
+    width: 100%;
 
-    a {
-      background: url(../../images/kreska-li.png) repeat-x top;
+    .p-menuitem,
+    .p-menuitem-link {
+      background: url(../../images/kreska-li.png) repeat-x bottom;
       text-transform: uppercase;
-      color: $dark;
       word-wrap: anywhere;
 
-      &:first-child {
+      &:last-child {
         background: none !important;
       }
 
-      &:hover {
-        color: $orange;
+      &:hover a span {
+        color: $orange !important;
       }
     }
 

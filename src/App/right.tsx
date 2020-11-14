@@ -1,15 +1,13 @@
 import React from "react";
-import Col from "react-bootstrap/Col";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export class RightSidebar extends React.Component {
   render() {
     return (
-      <Col sm={3} className="right-column pt-4 pr-4 pb-4 pl-4">
+      <div className="right-column p-p-4">
         {/* TODO: change to image */}
         <div className="right-column__row">
           <p className="h4">
-            <FontAwesomeIcon icon={["fab", "youtube"]} color="red" /> YouTube
+            {/* <FontAwesomeIcon icon={["fab", "youtube"]} color="red" /> YouTube */}
           </p>
         </div>
         <div className="right-column__row">
@@ -32,7 +30,7 @@ export class RightSidebar extends React.Component {
           <h4 className="h4">Parafia w mediach</h4>
           <p>Sprawy duszpasterskie załatwia się dziennie 30 min. po mszy św.</p>
         </div>
-      </Col>
+      </div>
     );
   }
 }

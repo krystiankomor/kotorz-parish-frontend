@@ -1,5 +1,12 @@
-.page {
+body {
   background: url(../../images/bg.png) repeat fixed 50% 50%;
+  min-height: 100vh;
+}
+
+.page {
+  overflow: hidden;
+  max-width: $xl;
+  margin: 0 auto;
 
   &__header {
     box-shadow: $main-container-box-shadow;

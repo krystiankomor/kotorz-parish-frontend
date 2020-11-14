@@ -1,9 +1,6 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Collapse from "react-bootstrap/Collapse";
 import ReactHtmlParser from "react-html-parser";
 import { v4 as uuidv4 } from "uuid";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface IPostReadMoreProps {
   text: string;
@@ -30,7 +27,7 @@ export class PostReadMore extends React.Component<
   render() {
     return (
       <>
-        <Button
+        {/* <Button
           onClick={() => this.setState({ show: true })}
           aria-controls={this.indentifier}
           aria-expanded={this.state.show}
@@ -48,7 +45,7 @@ export class PostReadMore extends React.Component<
           <div className="text-justify" id={this.indentifier}>
             {ReactHtmlParser(this.props.text)}
           </div>
-        </Collapse>
+        </Collapse> */}
       </>
     );
   }
